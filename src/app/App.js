@@ -15,7 +15,7 @@ const App = () => {
             if (user._id === id) {
                 return {
                     ...user,
-                    bookmark: !user.bookmark,
+                    bookmark: !user.bookmark
                 }
             }
             return user

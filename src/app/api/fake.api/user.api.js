@@ -12,8 +12,7 @@ const qualities = {
     buller: { _id: "67rdca3eeb7f6fgeed4711012", name: "Троль", color: "success" },
     alcoholic: { _id: "67rdca3eeb7f6fgeed471101", name: "Алкоголик", color: "danger" },
     handsome: { _id: "67rdca3eeb7f6fgeed471102", name: "Красавчик", color: "info" },
-    uncertain: { _id: "67rdca3eeb7f6fgeed471103", name: "Неуверенный", color: "dark" },
-
+    uncertain: { _id: "67rdca3eeb7f6fgeed471103", name: "Неуверенный", color: "dark" }
 }
 
 const users = [
@@ -124,7 +123,7 @@ const users = [
         completedMeetings: 434,
         rate: 5,
         bookmark: false
-    },
+    }
 ]
 export function fetchAll() {
     return users
