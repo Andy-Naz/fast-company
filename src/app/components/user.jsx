@@ -1,6 +1,7 @@
 import React from "react"
 import Quality from "./quality"
 import BookMark from "./bookmark"
+import PropTypes from "prop-types"
 
 const User = (user) => {
     return (
@@ -15,7 +16,7 @@ const User = (user) => {
             <td>{user.completedMeetings}</td>
             <td>{user.rate} /5</td>
             <td>
-                <BookMark user={user} onBookMark={user.onBookMark} />
+                <BookMark user={user} onClick={() => user.onBookMark(user._id)} />
             </td>
             <td>
                 <button onClick={() => user.onDelete(user._id)} className="btn btn-danger">
@@ -24,6 +25,10 @@ const User = (user) => {
             </td>
         </tr>
     )
+}
+
+User.propTypes = {
+    user: PropTypes.object.isRequired,
 }
 
 export default User
