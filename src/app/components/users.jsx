@@ -9,15 +9,18 @@ import api from "../api"
 const Users = ({ users: allUsers, ...rest }) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
+    const [selectedProf, setSelectedProf] = useState()
     const count = allUsers.length
     const pageSize = 4
+
     useEffect(() => {
         api.professions.fetchAll().then((data) => setProfession(data))
     })
 
-    const handleProfessionSelect = (params) => {
-        console.log(params)
+    const handleProfessionSelect = (item) => {
+        setSelectedProf(item)
     }
+
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex)
     }
@@ -26,7 +29,9 @@ const Users = ({ users: allUsers, ...rest }) => {
 
     return (
         <>
-            {professions && <GroupList items={professions} onItemSelect={handleProfessionSelect} />}
+            {professions && (
+                <GroupList items={professions} onItemSelect={handleProfessionSelect} selectedItem={selectedProf} />
+            )}
             {count > 0 && (
                 <table className="table">
                     <thead>
