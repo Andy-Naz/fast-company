@@ -18,7 +18,6 @@ const Users = ({ users: allUsers, ...rest }) => {
     const handleProfessionSelect = (params) => {
         console.log(params)
     }
-    console.log(professions)
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex)
     }
