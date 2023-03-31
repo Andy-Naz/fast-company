@@ -24,7 +24,7 @@ const App = () => {
 
     return (
         <>
-            <Users users={users} onDelete={handleDelete} onBookMark={handleToggleBookMark} />
+            <Users users={users} onDelete={handleDelete} onToggleBookMark={handleToggleBookMark} />
         </>
     )
 }
