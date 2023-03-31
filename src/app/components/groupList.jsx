@@ -12,6 +12,7 @@ const GroupList = ({ items, valueProperty, contentProperty, onItemSelect, select
                     role="button"
                 >
                     {items[item][contentProperty]}
+                    {console.log(items[item])}
                 </li>
             ))}
         </ul>
@@ -22,7 +23,7 @@ GroupList.defaultProps = {
     contentProperty: "name"
 }
 GroupList.propTypes = {
-    items: PropTypes.object.isRequired,
+    items: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     valueProperty: PropTypes.string.isRequired,
     contentProperty: PropTypes.string.isRequired,
     onItemSelect: PropTypes.func,
