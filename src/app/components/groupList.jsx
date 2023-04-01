@@ -12,7 +12,7 @@ const GroupList = ({ items, valueProperty, contentProperty, onItemSelect, select
                     role="button"
                 >
                     {items[item][contentProperty]}
-                    {console.log(items[item])}
+                    {/* {console.log(items[item])} */}
                 </li>
             ))}
         </ul>
