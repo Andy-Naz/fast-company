@@ -12,7 +12,7 @@ const Users = ({ users: allUsers, ...rest }) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
     const [selectedProf, setSelectedProf] = useState()
-    const [sortBy, setSortBy] = useState({ iter: "name", order: "asc" })
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
     const pageSize = 8
 
     useEffect(() => {
@@ -44,7 +44,7 @@ const Users = ({ users: allUsers, ...rest }) => {
         : allUsers
     const count = filteredUsers.length
 
-    const sortedUsers = _.orderBy(filteredUsers, [sortBy.iter], [sortBy.order])
+    const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
 
     const userCrop = paginate(sortedUsers, currentPage, pageSize)
 
