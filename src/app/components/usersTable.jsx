@@ -25,13 +25,7 @@ const UserTable = ({ users, onSort, selectedSort, onToggleBookMark, onDelete, ..
         }
     }
 
-    return (
-        <Table onSort={onSort} selectedSort={selectedSort} columns={columns} data={users} />
-        // <table className="table">
-        //     <TableHeader {...{ onSort, selectedSort, columns }} />
-        //     <TableBody {...{ data: users, columns }} />
-        // </table>
-    )
+    return <Table onSort={onSort} selectedSort={selectedSort} columns={columns} data={users} />
 }
 
 UserTable.propTypes = {
