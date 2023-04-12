@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { paginate } from "../utils/paginate"
-import Pagination from "./pagination"
-import GroupList from "./groupList"
-import SearchStatus from "./searchStatus"
-import UserTable from "./usersTable"
+import Pagination from "../components/pagination"
+import GroupList from "../components/groupList"
+import SearchStatus from "../components/searchStatus"
+import UserTable from "../components/usersTable"
 import api from "../api"
 import _ from "lodash"
 
