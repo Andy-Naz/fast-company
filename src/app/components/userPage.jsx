@@ -5,16 +5,11 @@ import QualitiesList from "./qualitiesList"
 import api from "../api"
 
 const UserPage = ({ id }) => {
-    console.log(id)
     const [user, setUser] = useState()
 
     useEffect(() => {
-        api.users.getById(id).then((user) => setUser(user))
+        api.users.getById(id).then((data) => setUser(data))
     }, [])
-
-    useEffect(() => {
-        console.log(user)
-    }, [user])
 
     const history = useHistory()
 
@@ -26,15 +21,15 @@ const UserPage = ({ id }) => {
         return (
             <>
                 <h1>{user.name}</h1>
-                <h2>Профессия: {user.profession}</h2>
+                <h2>Профессия: {user.profession.name}</h2>
                 <QualitiesList qualities={user.qualities} />
-                <h3>{user.completedMeetings}</h3>
-                <h2>{user.rate}</h2>
+                <h6>completedMeetings: {user.completedMeetings}</h6>
+                <h2>Rate: {user.rate}</h2>
                 <button onClick={() => handleBackToUsers()}>Все пользователи</button>
             </>
         )
     }
-    return "...loading"
+    return "loading..."
 }
 
 UserPage.propTypes = {

@@ -6,6 +6,8 @@ import SearchStatus from "../components/searchStatus"
 import UserTable from "../components/usersTable"
 import api from "../api"
 import _ from "lodash"
+import { useParams } from "react-router-dom"
+import UserPage from "../components/userPage"
 
 const Users = () => {
     const [currentPage, setCurrentPage] = useState(1)
@@ -20,8 +22,11 @@ const Users = () => {
         api.users.fetchAll().then((data) => setUsers(data))
     }, [])
 
-    const handleDelete = (userId) => {
-        setUsers(users.filter((user) => user._id !== userId))
+    const params = useParams()
+    const { userId } = params
+
+    const handleDelete = (id) => {
+        setUsers(users.filter((user) => user._id !== id))
     }
 
     const handleToggleBookMark = (id) => {
@@ -71,6 +76,9 @@ const Users = () => {
 
         const userCrop = paginate(sortedUsers, currentPage, pageSize)
 
+        if (userId) {
+            return <UserPage id={userId} />
+        }
         return (
             <div className="d-flex">
                 {professions && (
