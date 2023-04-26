@@ -3,7 +3,7 @@ import TextField from "../components/textField"
 
 const Login = () => {
     const [data, setData] = useState({ email: "", password: "" })
-    const [, setErrors] = useState()
+    const [errors, setErrors] = useState({})
     const handleChange = ({ target }) => {
         setData((prevState) => ({ ...prevState, [target.name]: target.value }))
     }
@@ -32,8 +32,21 @@ const Login = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <TextField label="Электронная почта" name="email" value={data.email} onChange={handleChange} />
-            <TextField label="Пароль" type="password" name="password" value={data.password} onChange={handleChange} />
+            <TextField
+                label="Электронная почта"
+                name="email"
+                value={data.email}
+                onChange={handleChange}
+                error={errors.email}
+            />
+            <TextField
+                label="Пароль"
+                type="password"
+                name="password"
+                value={data.password}
+                onChange={handleChange}
+                error={errors.password}
+            />
             <button type="submit">Отправить</button>
         </form>
     )
