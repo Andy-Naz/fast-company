@@ -7,13 +7,16 @@ import SearchStatus from "../components/searchStatus"
 import UserTable from "../components/usersTable"
 import api from "../api"
 import _ from "lodash"
+import SearchField from "./searchField"
 
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
     const [selectedProf, setSelectedProf] = useState()
+    const [searchInput, setSearchInput] = useState("")
+
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
-    const pageSize = 8
+    const pageSize = 4
 
     const [users, setUsers] = useState()
 
@@ -44,10 +47,16 @@ const UsersList = () => {
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [selectedProf])
+    }, [selectedProf, searchInput])
 
     const handleProfessionSelect = (item) => {
+        setSearchInput("")
         setSelectedProf(item)
+    }
+
+    const handleSearchInput = ({ target }) => {
+        setSelectedProf()
+        setSearchInput(target.value)
     }
 
     const handlePageChange = (pageIndex) => {
@@ -60,12 +69,25 @@ const UsersList = () => {
 
     const clearFilter = () => {
         setSelectedProf()
+        setSearchInput("")
     }
 
     if (users) {
-        const filteredUsers = selectedProf
-            ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-            : users
+        let filteredUsers = null
+        if (searchInput) {
+            filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()))
+        } else if (selectedProf) {
+            filteredUsers = users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+        } else {
+            filteredUsers = users
+        }
+
+        // const filteredUsers = searchInput
+        //     ? users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()))
+        //     : selectedProf
+        //         ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+        //         : users
+
         const count = filteredUsers.length
 
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order])
@@ -88,6 +110,12 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
+                    <SearchField value={searchInput} onChange={handleSearchInput} />
+
+                    {/* <form action="">
+                        <input type="text" placeholder="Поиск" value={searchInput} onChange={handleSearchInput}></input>
+                    </form> */}
+
                     {count > 0 && (
                         <UserTable
                             users={userCrop}
