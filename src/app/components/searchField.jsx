@@ -2,11 +2,7 @@ import React from "react"
 import PropTypes from "prop-types"
 
 const SearchField = ({ value, onChange }) => {
-    return (
-        <form action="">
-            <input type="text" placeholder="Поиск" value={value} onChange={onChange}></input>
-        </form>
-    )
+    return <input type="text" className="form-control" placeholder="Поиск по имени..." value={value} onChange={onChange}></input>
 }
 
 SearchField.propTypes = {
