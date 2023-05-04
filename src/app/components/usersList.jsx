@@ -7,13 +7,12 @@ import SearchStatus from "../components/searchStatus"
 import UserTable from "../components/usersTable"
 import api from "../api"
 import _ from "lodash"
-import SearchField from "./searchField"
 
 const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
     const [selectedProf, setSelectedProf] = useState()
-    const [searchInput, setSearchInput] = useState("")
+    const [searchQuery, setSearchQuery] = useState("")
 
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
     const pageSize = 4
@@ -47,16 +46,16 @@ const UsersList = () => {
 
     useEffect(() => {
         setCurrentPage(1)
-    }, [selectedProf, searchInput])
+    }, [selectedProf, searchQuery])
 
     const handleProfessionSelect = (item) => {
-        setSearchInput("")
+        setSearchQuery("")
         setSelectedProf(item)
     }
 
-    const handleSearchInput = ({ target }) => {
+    const handleSearchQuery = ({ target }) => {
         setSelectedProf()
-        setSearchInput(target.value)
+        setSearchQuery(target.value)
     }
 
     const handlePageChange = (pageIndex) => {
@@ -69,24 +68,24 @@ const UsersList = () => {
 
     const clearFilter = () => {
         setSelectedProf()
-        setSearchInput("")
+        setSearchQuery("")
     }
 
     if (users) {
         let filteredUsers = null
-        if (searchInput) {
-            filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()))
+        if (searchQuery) {
+            filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
         } else if (selectedProf) {
             filteredUsers = users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
         } else {
             filteredUsers = users
         }
 
-        // const filteredUsers = searchInput
-        //     ? users.filter((user) => user.name.toLowerCase().includes(searchInput.toLowerCase()))
+        // const filteredUsers = searchQuery
+        //     ? users.filter((user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
         //     : selectedProf
-        //         ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-        //         : users
+        //     ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+        //     : users
 
         const count = filteredUsers.length
 
@@ -110,11 +109,14 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count} />
-                    <SearchField value={searchInput} onChange={handleSearchInput} />
 
-                    {/* <form action="">
-                        <input type="text" placeholder="Поиск" value={searchInput} onChange={handleSearchInput}></input>
-                    </form> */}
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Поиск по имени..."
+                        value={searchQuery}
+                        onChange={handleSearchQuery}
+                    ></input>
 
                     {count > 0 && (
                         <UserTable
