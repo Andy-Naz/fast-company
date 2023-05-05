@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { validator } from "../../utils/validator"
 import TextField from "../common/form/textField"
+import api from "../../api"
+import SelectField from "../common/form/selectField"
 
-const LoginForm = () => {
-    const [data, setData] = useState({ email: "", password: "" })
+const RegisterForm = () => {
+    const [data, setData] = useState({ email: "", password: "", profession: "" })
     const [errors, setErrors] = useState({})
+    const [professions, setProfession] = useState()
+
     const handleChange = ({ target }) => {
         setData((prevState) => ({ ...prevState, [target.name]: target.value }))
     }
@@ -19,8 +23,15 @@ const LoginForm = () => {
             isCapitalSymbol: { message: "Пароль должен содержать хотя бы одну заглавную букву" },
             isContainDigit: { message: "Пароль должен содержать хотя бы одну цифру" },
             min: { message: "Пароль должен содержать не менее 8 символов", value: 8 }
+        },
+        profession: {
+            isRequired: { message: "Обязательно выберите вашу профессию" }
         }
     }
+
+    useEffect(() => {
+        api.professions.fetchAll().then((data) => setProfession(data))
+    }, [])
 
     useEffect(() => {
         validate()
@@ -58,6 +69,15 @@ const LoginForm = () => {
                 onChange={handleChange}
                 error={errors.password}
             />
+            <SelectField
+                label="Выберите вашу профессию"
+                defaultOption="Choose..."
+                options={professions}
+                value={data.profession}
+                onChange={handleChange}
+                error={errors.profession}
+            />
+
             <button type="submit" disabled={!isValid} className="btn btn-primary w-100 mx-auto">
                 Отправить
             </button>
@@ -65,4 +85,4 @@ const LoginForm = () => {
     )
 }
 
-export default LoginForm
+export default RegisterForm
