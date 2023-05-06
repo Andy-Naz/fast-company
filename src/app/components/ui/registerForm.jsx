@@ -5,15 +5,22 @@ import api from "../../api"
 import SelectField from "../common/form/selectField"
 import RadioField from "../common/form/radioField"
 import MultiSelectField from "../common/form/multiSelectField"
+import CheckBoxField from "../common/form/checkBoxField"
 
 const RegisterForm = () => {
-    const [data, setData] = useState({ email: "", password: "", profession: "", sex: "male", qualities: [] })
+    const [data, setData] = useState({
+        email: "",
+        password: "",
+        profession: "",
+        sex: "male",
+        qualities: [],
+        license: false
+    })
     const [errors, setErrors] = useState({})
     const [professions, setProfession] = useState()
     const [qualities, setQualities] = useState({})
 
     const handleChange = (target) => {
-        console.log(target)
         setData((prevState) => ({ ...prevState, [target.name]: target.value }))
     }
 
@@ -30,6 +37,11 @@ const RegisterForm = () => {
         },
         profession: {
             isRequired: { message: "Обязательно выберите вашу профессию" }
+        },
+        license: {
+            isRequired: {
+                message: "Вы не можете использовать наш сервис без подтверждения лицензионного соглашения"
+            }
         }
     }
 
@@ -92,7 +104,6 @@ const RegisterForm = () => {
                 name="sex"
                 onChange={handleChange}
                 label="Выберите ваш пол"
-
             />
             <MultiSelectField
                 options={qualities}
@@ -100,6 +111,10 @@ const RegisterForm = () => {
                 name="qualities"
                 label="Выберите ваши качества"
             />
+            <CheckBoxField name="license" value={data.license} onChange={handleChange} error={errors.license}>
+                Подтвердить <a>лицензионное соглашение</a>
+            </CheckBoxField>
+
             <button type="submit" disabled={!isValid} className="btn btn-primary w-100 mx-auto">
                 Отправить
             </button>

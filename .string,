@@ -1,0 +1,42 @@
+[1mdiff --git a/src/app/components/ui/registerForm.jsx b/src/app/components/ui/registerForm.jsx[m
+[1mindex 90a1290..1982355 100644[m
+[1m--- a/src/app/components/ui/registerForm.jsx[m
+[1m+++ b/src/app/components/ui/registerForm.jsx[m
+[36m@@ -5,9 +5,17 @@[m [mimport api from "../../api"[m
+ import SelectField from "../common/form/selectField"[m
+ import RadioField from "../common/form/radioField"[m
+ import MultiSelectField from "../common/form/multiSelectField"[m
+[32m+[m[32mimport CheckBoxField from "../common/form/checkBoxField"[m
+ [m
+ const RegisterForm = () => {[m
+[31m-    const [data, setData] = useState({ email: "", password: "", profession: "", sex: "male", qualities: [] })[m
+[32m+[m[32m    const [data, setData] = useState({[m
+[32m+[m[32m        email: "",[m
+[32m+[m[32m        password: "",[m
+[32m+[m[32m        profession: "",[m
+[32m+[m[32m        sex: "male",[m
+[32m+[m[32m        qualities: [],[m
+[32m+[m[32m        license: false[m
+[32m+[m[32m    })[m
+     const [errors, setErrors] = useState({})[m
+     const [professions, setProfession] = useState()[m
+     const [qualities, setQualities] = useState({})[m
+[36m@@ -92,7 +100,6 @@[m [mconst RegisterForm = () => {[m
+                 name="sex"[m
+                 onChange={handleChange}[m
+                 label="Выберите ваш пол"[m
+[31m-[m
+             />[m
+             <MultiSelectField[m
+                 options={qualities}[m
+[36m@@ -100,6 +107,10 @@[m [mconst RegisterForm = () => {[m
+                 name="qualities"[m
+                 label="Выберите ваши качества"[m
+             />[m
+[32m+[m[32m            <CheckBoxField name="license" value={data.license} onChange={handleChange}>[m
+[32m+[m[32m                Подтвердить лицензионное соглашение[m
+[32m+[m[32m            </CheckBoxField>[m
+[32m+[m
+             <button type="submit" disabled={!isValid} className="btn btn-primary w-100 mx-auto">[m
+                 Отправить[m
+             </button>[m
