@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 
-const SelectField = ({ label, value, onChange, defaultOption, options, error }) => {
+const SelectField = ({ label, value, onChange, defaultOption, options, name, error }) => {
     const optionsArray =
         !Array.isArray(options) && typeof options === "object"
             ? Object.keys(options).map((optionName) => ({
@@ -20,16 +20,10 @@ const SelectField = ({ label, value, onChange, defaultOption, options, error }) 
 
     return (
         <div className="mb-4">
-            <label htmlFor="validationCustom04" className="form-label">
+            <label htmlFor={name} className="form-label">
                 {label}
             </label>
-            <select
-                className={getInputClasses()}
-                id="validationCustom04"
-                name="profession"
-                value={value}
-                onChange={handleChange}
-            >
+            <select className={getInputClasses()} id={name} name={name} value={value} onChange={handleChange}>
                 <option disabled value="">
                     {defaultOption}
                 </option>
@@ -51,6 +45,7 @@ SelectField.propTypes = {
     onChange: PropTypes.func,
     defaultOption: PropTypes.string,
     error: PropTypes.string,
+    name: PropTypes.string,
     options: PropTypes.oneOfType(PropTypes.array, PropTypes.object)
 }
 export default SelectField
