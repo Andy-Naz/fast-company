@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { validator } from "../../utils/validator"
 import TextField from "../common/form/textField"
 import api from "../../api"
@@ -16,27 +16,89 @@ const RegisterForm = () => {
         qualities: [],
         license: false
     })
+    const [qualities, setQualities] = useState([])
+    const [professions, setProfession] = useState([])
     const [errors, setErrors] = useState({})
-    const [professions, setProfession] = useState()
-    const [qualities, setQualities] = useState({})
+
+    const getProfessionById = (id) => {
+        for (const prof of professions) {
+            if (prof.value === id) {
+                return { _id: prof.value, name: prof.label }
+            }
+        }
+    }
+
+    const getQualities = (elements) => {
+        const qualitiesArray = []
+        for (const elem of elements) {
+            for (const quality in qualities) {
+                if (elem.value === qualities[quality].value) {
+                    qualitiesArray.push({
+                        _id: qualities[quality].value,
+                        name: qualities[quality].label,
+                        color: qualities[quality].color
+                    })
+                }
+            }
+        }
+        return qualitiesArray
+    }
+
+    useEffect(() => {
+        api.professions.fetchAll().then((data) => {
+            const professionsList = Object.keys(data).map((professionName) => ({
+                label: data[professionName].name,
+                value: data[professionName]._id
+            }))
+            setProfession(professionsList)
+            console.log(professionsList)
+        })
+        api.qualities.fetchAll().then((data) => {
+            const qualitiesList = Object.keys(data).map((optionName) => ({
+                value: data[optionName]._id,
+                label: data[optionName].name,
+                color: data[optionName].color
+            }))
+            setQualities(qualitiesList)
+            console.log(qualitiesList)
+        })
+    }, [])
 
     const handleChange = (target) => {
-        setData((prevState) => ({ ...prevState, [target.name]: target.value }))
+        setData((prevState) => ({
+            ...prevState,
+            [target.name]: target.value
+        }))
     }
 
     const validatorConfig = {
         email: {
-            isRequired: { message: "Электронная почта обязательна для заполнения" },
-            isEmail: { message: "Email введен некорректно" }
+            isRequired: {
+                message: "Электронная почта обязательна для заполнения"
+            },
+            isEmail: {
+                message: "Email введен некорректно"
+            }
         },
         password: {
-            isRequired: { message: "Пароль обязателен для заполнения" },
-            isCapitalSymbol: { message: "Пароль должен содержать хотя бы одну заглавную букву" },
-            isContainDigit: { message: "Пароль должен содержать хотя бы одну цифру" },
-            min: { message: "Пароль должен содержать не менее 8 символов", value: 8 }
+            isRequired: {
+                message: "Пароль обязателен для заполнения"
+            },
+            isCapitalSymbol: {
+                message: "Пароль должен содержать хотя бы одну заглавную букву"
+            },
+            isContainDigit: {
+                message: "Пароль должен содержать хотя бы одно число"
+            },
+            min: {
+                message: "Пароль должен состоять минимум из 8 символов",
+                value: 8
+            }
         },
         profession: {
-            isRequired: { message: "Обязательно выберите вашу профессию" }
+            isRequired: {
+                message: "Обязательно выберите вашу профессию"
+            }
         },
         license: {
             isRequired: {
@@ -44,11 +106,6 @@ const RegisterForm = () => {
             }
         }
     }
-
-    useEffect(() => {
-        api.professions.fetchAll().then((data) => setProfession(data))
-        api.qualities.fetchAll().then((data) => setQualities(data))
-    }, [])
 
     useEffect(() => {
         validate()
@@ -66,7 +123,13 @@ const RegisterForm = () => {
         e.preventDefault()
         const isValid = validate()
         if (!isValid) return
-        console.log(data)
+        const { profession, qualities } = data
+        console.log("data", data)
+        console.log({
+            ...data,
+            profession: getProfessionById(profession),
+            qualities: getQualities(qualities)
+        })
     }
 
     return (
@@ -87,12 +150,12 @@ const RegisterForm = () => {
                 error={errors.password}
             />
             <SelectField
-                label="Выберите вашу профессию"
+                label="Выбери свою профессию"
                 defaultOption="Choose..."
-                name="professions"
                 options={professions}
-                value={data.profession}
+                name="profession"
                 onChange={handleChange}
+                value={data.profession}
                 error={errors.profession}
             />
             <RadioField
@@ -113,12 +176,11 @@ const RegisterForm = () => {
                 name="qualities"
                 label="Выберите ваши качества"
             />
-            <CheckBoxField name="license" value={data.license} onChange={handleChange} error={errors.license}>
+            <CheckBoxField value={data.license} onChange={handleChange} name="license" error={errors.license}>
                 Подтвердить <a>лицензионное соглашение</a>
             </CheckBoxField>
-
-            <button type="submit" disabled={!isValid} className="btn btn-primary w-100 mx-auto">
-                Отправить
+            <button className="btn btn-primary w-100 mx-auto" type="submit" disabled={!isValid}>
+                Submit
             </button>
         </form>
     )
