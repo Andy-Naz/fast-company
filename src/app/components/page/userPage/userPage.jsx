@@ -1,29 +1,23 @@
 import React, { useState, useEffect } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import PropTypes from "prop-types"
 import QualitiesList from "../../ui/qualities/qualitiesList"
 import api from "../../../api"
-import EditForm from "../../ui/editForm"
 
-const UserPage = ({ id }) => {
+const UserPage = ({ userId }) => {
     const [user, setUser] = useState()
-    const params = useParams()
-    const { edit } = params
 
     useEffect(() => {
-        api.users.getById(id).then((data) => setUser(data))
+        api.users.getById(userId).then((data) => setUser(data))
     }, [])
 
     const history = useHistory()
 
     const handleEditUsers = () => {
-        history.push(`/users/${id}/edit`)
+        history.push(`/users/${userId}/edit`)
     }
 
     if (user) {
-        if (edit) {
-            return <EditForm user={user} />
-        }
         return (
             <>
                 <h1>{user.name}</h1>
@@ -41,7 +35,7 @@ const UserPage = ({ id }) => {
 }
 
 UserPage.propTypes = {
-    id: PropTypes.string.isRequired
+    userId: PropTypes.string.isRequired
 }
 
 export default UserPage
