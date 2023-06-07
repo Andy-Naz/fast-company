@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { useHistory } from "react-router-dom"
 import PropTypes from "prop-types"
-import QualitiesList from "../../ui/qualities/qualitiesList"
 import api from "../../../api"
+import UserInfoCard from "./userInfoCard"
+import Comments from "./comments"
 
 const UserPage = ({ userId }) => {
     const [user, setUser] = useState()
@@ -19,16 +20,16 @@ const UserPage = ({ userId }) => {
 
     if (user) {
         return (
-            <>
-                <h1>{user.name}</h1>
-                <h2>Email: {user.email}</h2>
-                <h2>Профессия: {user.profession.name}</h2>
-                <QualitiesList qualities={user.qualities} />
-                <h6>completedMeetings: {user.completedMeetings}</h6>
-                <h5>Пол: {user.sex}</h5>
-                <h2>Rate: {user.rate}</h2>
-                <button onClick={handleEditUsers}>Изменить</button>
-            </>
+            <div className="container">
+                <div className="row gutters-sm">
+                    <div className="col-md-4 mb-3">
+                        <UserInfoCard user={user} onEdit={handleEditUsers} />
+                    </div>
+                    <div className="col-md-8">
+                        <Comments userId={userId} />
+                    </div>
+                </div>
+            </div>
         )
     }
     return "loading..."
