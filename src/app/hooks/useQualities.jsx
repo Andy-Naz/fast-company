@@ -22,7 +22,6 @@ export const QualitiesProvider = ({ children }) => {
 
     useEffect(() => {
         getQualitiesList()
-        console.log(qualities)
     }, [])
     function errorCatcher(error) {
         const { message } = error.response.data
@@ -36,7 +35,6 @@ export const QualitiesProvider = ({ children }) => {
         try {
             const { content } = await QualitiesService.get()
             setQualities(content)
-            console.log("qualities:", content)
             setLoading(false)
         } catch (error) {
             errorCatcher(error)
