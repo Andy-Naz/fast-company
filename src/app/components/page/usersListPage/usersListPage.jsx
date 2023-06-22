@@ -2,42 +2,35 @@ import React, { useState, useEffect } from "react"
 import PropTypes from "prop-types"
 import { paginate } from "../../../utils/paginate"
 import Pagination from "../../common/pagination"
+import api from "../../../api"
 import GroupList from "../../common/groupList"
 import SearchStatus from "../../ui/searchStatus"
 import UserTable from "../../ui/usersTable"
-import api from "../../../api"
 import _ from "lodash"
+import { useUser } from "../../../hooks/useUsers"
 
 const UsersListPage = () => {
+    const { users } = useUser()
     const [currentPage, setCurrentPage] = useState(1)
     const [professions, setProfession] = useState()
-    const [selectedProf, setSelectedProf] = useState()
     const [searchQuery, setSearchQuery] = useState("")
-
+    const [selectedProf, setSelectedProf] = useState()
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" })
-    const pageSize = 4
+    const pageSize = 8
 
-    const [users, setUsers] = useState()
-
-    useEffect(() => {
-        api.users.fetchAll().then((data) => setUsers(data))
-    }, [])
-
-    const handleDelete = (id) => {
-        setUsers(users.filter((user) => user._id !== id))
+    const handleDelete = (userId) => {
+        // setUsers(users.filter((user) => user._id !== userId));
+        console.log(userId)
     }
-
     const handleToggleBookMark = (id) => {
-        const newUsers = users.map((user) => {
+        const newArray = users.map((user) => {
             if (user._id === id) {
-                return {
-                    ...user,
-                    bookmark: !user.bookmark
-                }
+                return { ...user, bookmark: !user.bookmark }
             }
             return user
         })
-        setUsers(newUsers)
+        // setUsers(newArray);
+        console.log(newArray)
     }
 
     useEffect(() => {
@@ -80,12 +73,6 @@ const UsersListPage = () => {
         } else {
             filteredUsers = users
         }
-
-        // const filteredUsers = searchQuery
-        //     ? users.filter((user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        //     : selectedProf
-        //     ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-        //     : users
 
         const count = filteredUsers.length
 
