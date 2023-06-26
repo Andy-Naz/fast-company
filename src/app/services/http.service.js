@@ -19,8 +19,8 @@ axios.interceptors.request.use(
 function transformData(data) {
     return data
         ? Object.keys(data).map((key) => ({
-              ...data[key]
-          }))
+            ...data[key]
+        }))
         : []
 }
 axios.interceptors.response.use(
