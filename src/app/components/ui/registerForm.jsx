@@ -20,13 +20,13 @@ const RegisterForm = () => {
         qualities: [],
         license: false
     })
+    const [errors, setErrors] = useState({})
+
     const { qualities } = useQualities()
     const qualitiesList = qualities.map((quality) => ({ label: quality.name, value: quality._id }))
 
     const { professions } = useProfessions()
     const professionList = professions.map((profession) => ({ label: profession.name, value: profession._id }))
-
-    const [errors, setErrors] = useState({})
 
     const { singUp } = useAuth()
 
@@ -90,7 +90,6 @@ const RegisterForm = () => {
         const isValid = validate()
         if (!isValid) return
         const newData = { ...data, qualities: data.qualities.map((q) => q.value) }
-        console.log("data", newData)
         try {
             await singUp(newData)
             history.push("/")
