@@ -65,6 +65,7 @@ const UsersListPage = () => {
     }
 
     if (users) {
+        console.log(users)
         let filteredUsers = null
         if (searchQuery) {
             filteredUsers = users.filter((user) => user.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -126,7 +127,7 @@ const UsersListPage = () => {
             </div>
         )
     }
-    return "loading..."
+    return "Loading..."
 }
 
 UsersListPage.propTypes = {

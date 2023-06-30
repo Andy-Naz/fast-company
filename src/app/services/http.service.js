@@ -18,12 +18,22 @@ http.interceptors.request.use(
 
             const expiresDate = localStorageService.getTokenExpiresDate()
             const refreshToken = localStorageService.getRefreshToken()
-            if (refreshToken && expiresDate > Date.now()) {
+            if (refreshToken && expiresDate < Date.now()) {
                 const { data } = await httpAuth.post("https://securetoken.googleapis.com/v1/token", {
                     grant_type: "refresh_token",
                     refresh_token: refreshToken
                 })
-                console.log(data)
+                localStorageService.setTokens({
+                    idToken: data.id_token,
+                    refreshToken: data.refresh_token,
+                    localId: data.user_id,
+                    expiresIn: data.expires_in
+                })
+            }
+
+            const accessToken = localStorageService.getAccessToken()
+            if (accessToken) {
+                config.params = { ...config.params, auth: accessToken }
             }
         }
         return config
