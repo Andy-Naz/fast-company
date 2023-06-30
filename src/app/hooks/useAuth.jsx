@@ -6,7 +6,6 @@ import { toast } from "react-toastify"
 import localStorageService, { setTokens } from "../services/localStorage.service"
 
 export const httpAuth = axios.create({
-    baseURL: "https://identitytoolkit.googleapis.com/v1/",
     params: {
         key: process.env.REACT_APP_FIREBASE_KEY
     }
@@ -23,8 +22,9 @@ const AuthProvider = ({ children }) => {
     const [error, setError] = useState(null)
 
     async function singIn({ email, password }) {
+        const url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
         try {
-            const { data } = await httpAuth.post("accounts:signInWithPassword", {
+            const { data } = await httpAuth.post(url, {
                 email,
                 password,
                 returnSecureToken: true
@@ -53,8 +53,9 @@ const AuthProvider = ({ children }) => {
     }
 
     async function singUp({ email, password, ...rest }) {
+        const url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp"
         try {
-            const { data } = await httpAuth.post("accounts:signUp", { email, password, returnSecureToken: true })
+            const { data } = await httpAuth.post(url, { email, password, returnSecureToken: true })
             setTokens(data)
             console.log("singUp", data)
             await createUser({
