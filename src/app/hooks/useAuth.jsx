@@ -4,6 +4,7 @@ import axios from "axios"
 import userService from "../services/user.service"
 import { toast } from "react-toastify"
 import localStorageService, { setTokens } from "../services/localStorage.service"
+import { useHistory } from "react-router-dom"
 
 export const httpAuth = axios.create({
     params: {
@@ -20,6 +21,8 @@ export const useAuth = () => {
 const AuthProvider = ({ children }) => {
     const [currentUser, setUser] = useState()
     const [error, setError] = useState(null)
+    const [isLoading, setLoading] = useState(true)
+    const history = useHistory()
 
     async function singIn({ email, password }) {
         const url = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
@@ -30,8 +33,8 @@ const AuthProvider = ({ children }) => {
                 returnSecureToken: true
             })
             setTokens(data)
-            getUserData()
-            console.log("singIn", data)
+            await getUserData()
+            // console.log("singIn", data)
         } catch (error) {
             errorCatcher(error)
             const { code, message } = error.response.data.error
@@ -48,6 +51,12 @@ const AuthProvider = ({ children }) => {
         }
     }
 
+    function logOut() {
+        localStorageService.removeAuthData()
+        setUser(null)
+        history.push("/")
+    }
+
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min)
     }
@@ -57,7 +66,7 @@ const AuthProvider = ({ children }) => {
         try {
             const { data } = await httpAuth.post(url, { email, password, returnSecureToken: true })
             setTokens(data)
-            console.log("singUp", data)
+            // console.log("singUp", data)
             await createUser({
                 _id: data.localId,
                 email,
@@ -93,12 +102,16 @@ const AuthProvider = ({ children }) => {
             setUser(content)
         } catch (error) {
             errorCatcher(error)
+        } finally {
+            setLoading(false)
         }
     }
 
     useEffect(() => {
         if (localStorageService.getAccessToken()) {
             getUserData()
+        } else {
+            setLoading(false)
         }
     }, [])
 
@@ -114,7 +127,11 @@ const AuthProvider = ({ children }) => {
         setError(message)
     }
 
-    return <AuthContext.Provider value={{ singIn, singUp, currentUser }}>{children}</AuthContext.Provider>
+    return (
+        <AuthContext.Provider value={{ singIn, singUp, currentUser, logOut }}>
+            {!isLoading ? children : "Loading"}
+        </AuthContext.Provider>
+    )
 }
 
 AuthProvider.propTypes = {
