@@ -36,7 +36,14 @@ const UserProvider = ({ children }) => {
         setError(message)
         setLoading(false)
     }
-    return <UserContext.Provider value={{ users }}>{!isLoading ? children : "Loading..."}</UserContext.Provider>
+    function getUserById(userId) {
+        return users.find((user) => user._id === userId)
+    }
+    return (
+        <UserContext.Provider value={{ users, getUserById }}>
+            {!isLoading ? children : "Loading..."}
+        </UserContext.Provider>
+    )
 }
 
 UserProvider.propTypes = {
