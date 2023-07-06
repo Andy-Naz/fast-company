@@ -6,32 +6,30 @@ import NavProfile from "./navProfile"
 const NavBar = () => {
     const { currentUser } = useAuth()
     return (
-        <nav className="navbar navbar-expand-lg navbar-light mb-3" style={{ backgroundColor: "#e3f2fd" }}>
+        <nav className="navbar navbar-expand-sm navbar-light mb-3" style={{ backgroundColor: "#e3f2fd" }}>
             <div className="container-fluid">
-                <div className="collapse navbar-collapse">
-                    <ul className="navbar-nav">
+                <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/">
+                            Main
+                        </Link>
+                    </li>
+                    {currentUser && (
                         <li className="nav-item">
-                            <Link className="nav-link" to="/">
-                                Main
+                            <Link className="nav-link" to="/users">
+                                Users
                             </Link>
                         </li>
-                        {currentUser && (
-                            <li className="nav-item">
-                                <Link className="nav-link" to="/users">
-                                    Users
-                                </Link>
-                            </li>
-                        )}
-                    </ul>
-                    <div className="d-flex">
-                        {currentUser ? (
-                            <NavProfile />
-                        ) : (
-                            <Link className="nav-link" to="/login">
-                                Login
-                            </Link>
-                        )}
-                    </div>
+                    )}
+                </ul>
+                <div className="d-flex">
+                    {currentUser ? (
+                        <NavProfile />
+                    ) : (
+                        <Link className="nav-link" to="/login">
+                            Login
+                        </Link>
+                    )}
                 </div>
             </div>
         </nav>
