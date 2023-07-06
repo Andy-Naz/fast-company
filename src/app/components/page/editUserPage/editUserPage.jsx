@@ -12,6 +12,7 @@ import { useAuth } from "../../../hooks/useAuth"
 
 const EditUserPage = () => {
     const { currentUser } = useAuth()
+    const { updateUserData } = useAuth()
     // const history = useHistory()
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState({
@@ -63,12 +64,13 @@ const EditUserPage = () => {
         const isValid = validate()
         if (!isValid) return
         const { qualities } = data
-        console.log("qualities", qualities)
-        console.log({
+        // console.log("qualities", qualities)
+        const newData = {
             ...data,
             // profession: getProfessionById(profession),
             qualities: getQualities(qualities)
-        })
+        }
+        updateUserData(newData)
     }
     const transformData = (elements) => {
         const qualitiesArray = []
