@@ -34,7 +34,6 @@ const AuthProvider = ({ children }) => {
             })
             setTokens(data)
             await getUserData()
-            // console.log("singIn", data)
         } catch (error) {
             errorCatcher(error)
             const { code, message } = error.response.data.error
@@ -66,7 +65,6 @@ const AuthProvider = ({ children }) => {
         try {
             const { data } = await httpAuth.post(url, { email, password, returnSecureToken: true })
             setTokens(data)
-            // console.log("singUp", data)
             await createUser({
                 _id: data.localId,
                 email,

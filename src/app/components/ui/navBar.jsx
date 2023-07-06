@@ -9,7 +9,7 @@ const NavBar = () => {
         <nav className="navbar navbar-expand-lg navbar-light mb-3" style={{ backgroundColor: "#e3f2fd" }}>
             <div className="container-fluid">
                 <div className="collapse navbar-collapse">
-                    <ul className="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul className="navbar-nav">
                         <li className="nav-item">
                             <Link className="nav-link" to="/">
                                 Main

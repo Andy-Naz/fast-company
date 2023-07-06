@@ -73,16 +73,6 @@ export const CommentsProvider = ({ children }) => {
         setError(message)
     }
 
-    // async function getCommentsList() {
-    //     try {
-    //         const { content } = await CommentsService.get()
-    //         setComments(content)
-    //         setLoading(false)
-    //     } catch (error) {
-    //         errorCatcher(error)
-    //     }
-    // }
-
     return (
         <CommentsContext.Provider value={{ isLoading, comments, createComment, removeComment }}>
             {children}
