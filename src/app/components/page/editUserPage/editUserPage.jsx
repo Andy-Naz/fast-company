@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-// import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom"
 import { validator } from "../../../utils/validator"
 import TextField from "../../common/form/textField"
 import SelectField from "../../common/form/selectField"
@@ -13,7 +13,7 @@ import { useAuth } from "../../../hooks/useAuth"
 const EditUserPage = () => {
     const { currentUser } = useAuth()
     const { updateUserData } = useAuth()
-    // const history = useHistory()
+    const history = useHistory()
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState({
         name: "",
@@ -31,30 +31,6 @@ const EditUserPage = () => {
 
     const [errors, setErrors] = useState({})
 
-    // const getProfessionById = (id) => {
-    //     for (const prof of professions) {
-    //         if (prof.value === id) {
-    //             return { _id: prof.value, name: prof.label }
-    //         }
-    //     }
-    // }
-
-    // const getQualities = (elements) => {
-    //     const qualitiesArray = []
-    //     for (const elem of elements) {
-    //         for (const quality in qualities) {
-    //             if (elem.value === qualities[quality].value) {
-    //                 qualitiesArray.push({
-    //                     _id: qualities[quality].value,
-    //                     name: qualities[quality].label,
-    //                     color: qualities[quality].color
-    //                 })
-    //             }
-    //         }
-    //     }
-    //     return qualitiesArray
-    // }
-
     const getQualities = (elements) => {
         return elements.map((elem) => elem.value)
     }
@@ -64,14 +40,14 @@ const EditUserPage = () => {
         const isValid = validate()
         if (!isValid) return
         const { qualities } = data
-        // console.log("qualities", qualities)
         const newData = {
             ...data,
-            // profession: getProfessionById(profession),
             qualities: getQualities(qualities)
         }
         updateUserData(newData)
+        history.push(`/users/${currentUser._id}`)
     }
+
     const transformData = (elements) => {
         const qualitiesArray = []
         for (const elem of elements) {
