@@ -7,31 +7,28 @@ import RadioField from "../../common/form/radioField"
 import MultiSelectField from "../../common/form/multiSelectField"
 import BackHistoryButton from "../../common/backButton"
 import { useProfessions } from "../../../hooks/useProfession"
-import { useQualities } from "../../../hooks/useQualities"
 import { useAuth } from "../../../hooks/useAuth"
+import { useSelector } from "react-redux"
+import { getQualities, getQualitiesLoadingStatus } from "../../../store/qualities"
 
 const EditUserPage = () => {
     const { currentUser } = useAuth()
     const { updateUserData } = useAuth()
     const history = useHistory()
     const [isLoading, setIsLoading] = useState(true)
-    const [data, setData] = useState({
-        name: "",
-        email: "",
-        profession: "",
-        sex: "",
-        qualities: []
-    })
+    const [data, setData] = useState()
 
-    const { professions } = useProfessions()
+    const qualities = useSelector(getQualities())
+    const qualitiesLoading = useSelector(getQualitiesLoadingStatus())
+
+    const { professions, isLoading: professionsLoading } = useProfessions()
     const professionsList = professions.map((profession) => ({ label: profession.name, value: profession._id }))
 
-    const { qualities } = useQualities()
     const qualitiesList = qualities.map((quality) => ({ label: quality.name, value: quality._id }))
 
     const [errors, setErrors] = useState({})
 
-    const getQualities = (elements) => {
+    const transformQualities = (elements) => {
         return elements.map((elem) => elem.value)
     }
 
@@ -42,7 +39,7 @@ const EditUserPage = () => {
         const { qualities } = data
         const newData = {
             ...data,
-            qualities: getQualities(qualities)
+            qualities: transformQualities(qualities)
         }
         updateUserData(newData)
         history.push(`/users/${currentUser._id}`)
@@ -64,16 +61,17 @@ const EditUserPage = () => {
     }
 
     useEffect(() => {
-        const { qualities } = currentUser
-        setData((prevState) => ({
-            ...prevState,
-            ...currentUser,
-            qualities: transformData(qualities)
-        }))
-    }, [])
+        if (!professionsLoading && !qualitiesLoading && currentUser && !data) {
+            const { qualities } = currentUser
+            setData(() => ({
+                ...currentUser,
+                qualities: transformData(qualities)
+            }))
+        }
+    }, [professionsLoading, qualitiesLoading, currentUser, data])
 
     useEffect(() => {
-        if (data._id) setIsLoading(false)
+        if (data && isLoading) setIsLoading(false)
     }, [data])
 
     const handleChange = (target) => {
@@ -116,7 +114,7 @@ const EditUserPage = () => {
             <BackHistoryButton />
             <div className="row">
                 <div className="col-md-6 offset-md-3 shadow p-4">
-                    {!isLoading && Object.keys(professions).length > 0 ? (
+                    {!isLoading ? (
                         <form onSubmit={handleSubmit}>
                             <TextField
                                 label="Имя"

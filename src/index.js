@@ -5,13 +5,19 @@ import "./index.css"
 import "bootstrap/dist/css/bootstrap.css"
 import App from "./app/App"
 import { BrowserRouter } from "react-router-dom/cjs/react-router-dom.min"
+import { createStore } from "./app/store/createStore"
+import { Provider } from "react-redux"
+
+const store = createStore()
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
     <BrowserRouter>
-        <React.StrictMode>
+        {/* <React.StrictMode> */}
+        <Provider store={store}>
             <App />
-        </React.StrictMode>
+        </Provider>
+        {/* </React.StrictMode> */}
     </BrowserRouter>
 )
 
