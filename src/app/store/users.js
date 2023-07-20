@@ -12,7 +12,7 @@ const usersSlice = createSlice({
         isLoading: true,
         error: null,
         auth: null,
-        isLoggedIn: false // косяк
+        isLoggedIn: false
     },
     reducers: {
         usersRequested: (state) => {
@@ -27,7 +27,8 @@ const usersSlice = createSlice({
             state.isLoading = false
         },
         authRequestSuccess: (state, action) => {
-            state.auth = { ...action.payload, isLoggedIn: true } // или тут косяк
+            state.auth = action.payload
+            state.isLoggedIn = true
         },
         authRequestFailed: (state, action) => {
             state.error = action.payload
@@ -48,43 +49,43 @@ const createUserFailed = createAction("users/createUserFailed")
 
 export const logIn =
     ({ payload, redirect }) =>
-        async (dispatch) => {
-            const { email, password } = payload
-            dispatch(authRequested())
-            try {
-                const data = await authService.login({ email, password })
-                dispatch(authRequestSuccess({ userId: data.localId }))
-                localStorageService.setTokens(data)
-                history.push(redirect)
-            } catch (error) {
-                dispatch(authRequestFailed(error.message))
-            }
+    async (dispatch) => {
+        const { email, password } = payload
+        dispatch(authRequested())
+        try {
+            const data = await authService.login({ email, password })
+            dispatch(authRequestSuccess({ userId: data.localId }))
+            localStorageService.setTokens(data)
+            history.push(redirect)
+        } catch (error) {
+            dispatch(authRequestFailed(error.message))
         }
+    }
 
 export const singUp =
     ({ email, password, ...rest }) =>
-        async (dispatch) => {
-            dispatch(authRequested())
-            try {
-                const data = await authService.register({ email, password })
-                dispatch(authRequestSuccess({ userId: data.localId }))
-                localStorageService.setTokens(data)
-                dispatch(
-                    createUser({
-                        _id: data.localId,
-                        email,
-                        rate: getRandomInt(1, 5),
-                        completedMeetings: getRandomInt(0, 200),
-                        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-                            .toString(36)
-                            .substring(7)}.svg`,
-                        ...rest
-                    })
-                )
-            } catch (error) {
-                dispatch(authRequestFailed(error.message))
-            }
+    async (dispatch) => {
+        dispatch(authRequested())
+        try {
+            const data = await authService.register({ email, password })
+            dispatch(authRequestSuccess({ userId: data.localId }))
+            localStorageService.setTokens(data)
+            dispatch(
+                createUser({
+                    _id: data.localId,
+                    email,
+                    rate: getRandomInt(1, 5),
+                    completedMeetings: getRandomInt(0, 200),
+                    image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+                        .toString(36)
+                        .substring(7)}.svg`,
+                    ...rest
+                })
+            )
+        } catch (error) {
+            dispatch(authRequestFailed(error.message))
         }
+    }
 
 function createUser(payload) {
     return async function (dispatch) {
@@ -119,5 +120,6 @@ export const getUserById = (userId) => (state) => {
 
 export const getUsers = () => (state) => state.users.entities
 export const getUsersLoadingStatus = () => (state) => state.users.isLoading
+export const getLoggedIn = () => (state) => state.users.isLoggedIn
 
 export default usersReducer
