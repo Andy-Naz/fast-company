@@ -46,30 +46,45 @@ const authRequested = createAction("users/authRequested")
 const userCreateRequested = createAction("users/userCreateRequested")
 const createUserFailed = createAction("users/createUserFailed")
 
+export const logIn =
+    ({ payload, redirect }) =>
+        async (dispatch) => {
+            const { email, password } = payload
+            dispatch(authRequested())
+            try {
+                const data = await authService.login({ email, password })
+                dispatch(authRequestSuccess({ userId: data.localId }))
+                localStorageService.setTokens(data)
+                history.push(redirect)
+            } catch (error) {
+                dispatch(authRequestFailed(error.message))
+            }
+        }
+
 export const singUp =
     ({ email, password, ...rest }) =>
-    async (dispatch) => {
-        dispatch(authRequested)
-        try {
-            const data = await authService.register({ email, password })
-            localStorageService.setTokens(data)
-            dispatch(authRequestSuccess({ userId: data.localId }))
-            dispatch(
-                createUser({
-                    _id: data.localId,
-                    email,
-                    rate: getRandomInt(1, 5),
-                    completedMeetings: getRandomInt(0, 200),
-                    image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-                        .toString(36)
-                        .substring(7)}.svg`,
-                    ...rest
-                })
-            )
-        } catch (error) {
-            dispatch(authRequestFailed(error.message))
+        async (dispatch) => {
+            dispatch(authRequested())
+            try {
+                const data = await authService.register({ email, password })
+                dispatch(authRequestSuccess({ userId: data.localId }))
+                localStorageService.setTokens(data)
+                dispatch(
+                    createUser({
+                        _id: data.localId,
+                        email,
+                        rate: getRandomInt(1, 5),
+                        completedMeetings: getRandomInt(0, 200),
+                        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+                            .toString(36)
+                            .substring(7)}.svg`,
+                        ...rest
+                    })
+                )
+            } catch (error) {
+                dispatch(authRequestFailed(error.message))
+            }
         }
-    }
 
 function createUser(payload) {
     return async function (dispatch) {
