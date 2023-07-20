@@ -3,6 +3,7 @@ import userService from "../services/user.service"
 import authService from "../services/auth.service"
 import localStorageService from "../services/localStorage.service"
 import getRandomInt from "../utils/getRandomInt"
+import history from "../utils/history"
 
 const usersSlice = createSlice({
     name: "users",
@@ -47,28 +48,28 @@ const createUserFailed = createAction("users/createUserFailed")
 
 export const singUp =
     ({ email, password, ...rest }) =>
-        async (dispatch) => {
-            dispatch(authRequested)
-            try {
-                const data = await authService.register({ email, password })
-                localStorageService.setTokens(data)
-                dispatch(authRequestSuccess({ userId: data.localId }))
-                dispatch(
-                    createUser({
-                        _id: data.localId,
-                        email,
-                        rate: getRandomInt(1, 5),
-                        completedMeetings: getRandomInt(0, 200),
-                        image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
-                            .toString(36)
-                            .substring(7)}.svg`,
-                        ...rest
-                    })
-                )
-            } catch (error) {
-                dispatch(authRequestFailed(error.message))
-            }
+    async (dispatch) => {
+        dispatch(authRequested)
+        try {
+            const data = await authService.register({ email, password })
+            localStorageService.setTokens(data)
+            dispatch(authRequestSuccess({ userId: data.localId }))
+            dispatch(
+                createUser({
+                    _id: data.localId,
+                    email,
+                    rate: getRandomInt(1, 5),
+                    completedMeetings: getRandomInt(0, 200),
+                    image: `https://avatars.dicebear.com/api/avataaars/${(Math.random() + 1)
+                        .toString(36)
+                        .substring(7)}.svg`,
+                    ...rest
+                })
+            )
+        } catch (error) {
+            dispatch(authRequestFailed(error.message))
         }
+    }
 
 function createUser(payload) {
     return async function (dispatch) {
@@ -76,6 +77,7 @@ function createUser(payload) {
         try {
             const { content } = await userService.create(payload)
             dispatch(userCreated(content))
+            history.push("/users")
         } catch (error) {
             dispatch(createUserFailed(error.message))
         }
