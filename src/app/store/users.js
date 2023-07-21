@@ -124,7 +124,9 @@ export const loadUsersList = () => async (dispatch) => {
 }
 
 export const getUsersList = () => (state) => state.users.entities
-
+export const getCurrentUserData = () => (state) => {
+    return state.users.entities ? state.users.entities.find((u) => u._id === state.users.auth.userId) : null
+}
 export const getUserById = (userId) => (state) => {
     if (state.users.entities) {
         return state.users.entities.find((u) => u._id === userId)

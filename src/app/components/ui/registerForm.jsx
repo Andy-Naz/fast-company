@@ -5,8 +5,6 @@ import SelectField from "../common/form/selectField"
 import RadioField from "../common/form/radioField"
 import MultiSelectField from "../common/form/multiSelectField"
 import CheckBoxField from "../common/form/checkBoxField"
-// import { useAuth } from "../../hooks/useAuth"
-// import { useHistory } from "react-router-dom/cjs/react-router-dom.min"
 import { useDispatch, useSelector } from "react-redux"
 import { getQualities } from "../../store/qualities"
 import { getProfessions } from "../../store/professions"
@@ -14,7 +12,6 @@ import { singUp } from "../../store/users"
 
 const RegisterForm = () => {
     const dispatch = useDispatch()
-    // const history = useHistory()
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -32,8 +29,6 @@ const RegisterForm = () => {
 
     const professions = useSelector(getProfessions())
     const professionList = professions.map((profession) => ({ label: profession.name, value: profession._id }))
-
-    // const { singUp } = useAuth()
 
     const handleChange = (target) => {
         setData((prevState) => ({

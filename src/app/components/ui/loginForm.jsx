@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import { validator } from "../../utils/validator"
 import TextField from "../common/form/textField"
 import CheckBoxField from "../common/form/checkBoxField"
-// import { useAuth } from "../../hooks/useAuth"
 import { useHistory } from "react-router-dom"
 import { useDispatch } from "react-redux"
 import { logIn } from "../../store/users"
@@ -11,7 +10,6 @@ const LoginForm = () => {
     const history = useHistory()
     const [data, setData] = useState({ email: "", password: "", stayOn: false })
     const [errors, setErrors] = useState({})
-    // const { singIn } = useAuth()
     const dispatch = useDispatch()
 
     const handleChange = (target) => {

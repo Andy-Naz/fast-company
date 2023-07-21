@@ -10,10 +10,12 @@ import { useAuth } from "../../../hooks/useAuth"
 import { useSelector } from "react-redux"
 import { getQualities, getQualitiesLoadingStatus } from "../../../store/qualities"
 import { getProfessions, getProfessionsLoadingStatus } from "../../../store/professions"
+import { getCurrentUserData } from "../../../store/users"
 
 const EditUserPage = () => {
-    const { currentUser } = useAuth()
     const { updateUserData } = useAuth()
+    const currentUser = useSelector(getCurrentUserData())
+
     const history = useHistory()
     const [isLoading, setIsLoading] = useState(true)
     const [data, setData] = useState()

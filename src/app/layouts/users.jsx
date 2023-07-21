@@ -12,7 +12,6 @@ const Users = () => {
     const params = useParams()
     const { userId, edit } = params
     const currentUserId = useSelector(getCurrentUserId())
-    console.log(currentUserId)
 
     return (
         <>
