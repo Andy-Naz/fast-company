@@ -27,7 +27,6 @@ const Comments = () => {
     return (
         <>
             <div className="card mb-2">
-                {" "}
                 <div className="card-body ">
                     <AddCommentForm onSubmit={handleSubmit} />
                 </div>

@@ -45,7 +45,6 @@ const Comment = ({ content, created_at: created, _id: id, userId, onRemove }) =>
 }
 Comment.propTypes = {
     content: PropTypes.string,
-    edited_at: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     created_at: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     userId: PropTypes.string,
     onRemove: PropTypes.func,
