@@ -1,5 +1,6 @@
 import axios from "axios"
 import localStorageService from "./localStorage.service"
+import configFile from "../config.json"
 
 export const httpAuth = axios.create({
     params: {
@@ -7,9 +8,21 @@ export const httpAuth = axios.create({
     }
 })
 
-const singUpURL = "https://identitytoolkit.googleapis.com/v1/accounts:signUp"
-const logInURL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
-const tokenURL = "https://securetoken.googleapis.com/v1/token"
+const baseURLMongoDB = configFile.apiEndpoint.MongoDB
+
+let singUpURL = ""
+let logInURL = ""
+let tokenURL = ""
+
+if (configFile.isFireBase) {
+    singUpURL = "https://identitytoolkit.googleapis.com/v1/accounts:signUp"
+    logInURL = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword"
+    tokenURL = "https://securetoken.googleapis.com/v1/token"
+} else {
+    singUpURL = baseURLMongoDB + "/auth/" + "signUp"
+    logInURL = baseURLMongoDB + "/auth/" + "signInWithPassword"
+    tokenURL = baseURLMongoDB + "/auth/" + "token"
+}
 
 const authService = {
     register: async ({ email, password }) => {
