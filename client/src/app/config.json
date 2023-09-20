@@ -1,4 +1,7 @@
 {
-    "apiEndpoint": "https://fast-company-5823f-default-rtdb.europe-west1.firebasedatabase.app/",
+    "apiEndpoint": {
+        "FireBase": "https://fast-company-5823f-default-rtdb.europe-west1.firebasedatabase.app/",
+        "MongoDB": "http://localhost:8080/api"
+    },
     "isFireBase": true
 }

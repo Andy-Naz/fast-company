@@ -4,11 +4,12 @@ import configFile from "../config.json"
 import localStorageService from "./localStorage.service"
 import authService from "./auth.service"
 
+console.log(configFile.isFireBase ? configFile.apiEndpoint.FireBase : configFile.apiEndpoint.MongoDB)
 const http = axios.create({
-    baseURL: configFile.apiEndpoint
+    baseURL: configFile.isFireBase ? configFile.apiEndpoint.FireBase : configFile.apiEndpoint.MongoDB
 })
 
-http.defaults.baseURL = configFile.apiEndpoint
+// http.defaults.baseURL = configFile.apiEndpoint
 
 http.interceptors.request.use(
     async function (config) {
