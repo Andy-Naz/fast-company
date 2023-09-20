@@ -4,22 +4,21 @@ import configFile from "../config.json"
 import localStorageService from "./localStorage.service"
 import authService from "./auth.service"
 
-console.log(configFile.isFireBase ? configFile.apiEndpoint.FireBase : configFile.apiEndpoint.MongoDB)
 const http = axios.create({
     baseURL: configFile.isFireBase ? configFile.apiEndpoint.FireBase : configFile.apiEndpoint.MongoDB
 })
 
-// http.defaults.baseURL = configFile.apiEndpoint
-
 http.interceptors.request.use(
     async function (config) {
+        const expiresDate = localStorageService.getTokenExpiresDate()
+        const refreshToken = localStorageService.getRefreshToken()
+        const isExpired = refreshToken && expiresDate < Date.now()
+
         if (configFile.isFireBase) {
             const containSlash = /\/$/gi.test(config.url)
             config.url = (containSlash ? config.url.slice(0, -1) : config.url) + ".json"
 
-            const expiresDate = localStorageService.getTokenExpiresDate()
-            const refreshToken = localStorageService.getRefreshToken()
-            if (refreshToken && expiresDate < Date.now()) {
+            if (isExpired) {
                 const data = await authService.refresh()
                 localStorageService.setTokens({
                     idToken: data.id_token,
@@ -32,6 +31,23 @@ http.interceptors.request.use(
             const accessToken = localStorageService.getAccessToken()
             if (accessToken) {
                 config.params = { ...config.params, auth: accessToken }
+            }
+        } else {
+            if (isExpired) {
+                const data = await authService.refresh()
+                localStorageService.setTokens({
+                    idToken: data.accessToken,
+                    refreshToken: data.refreshToken,
+                    localId: data.userId,
+                    expiresIn: data.expiresIn
+                })
+            }
+            const accessToken = localStorageService.getAccessToken()
+            if (accessToken) {
+                config.headers = {
+                    ...config.headers,
+                    Authorization: `Bearer ${accessToken}`
+                }
             }
         }
         return config
