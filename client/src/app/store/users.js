@@ -5,6 +5,7 @@ import localStorageService from "../services/localStorage.service"
 import getRandomInt from "../utils/getRandomInt"
 import history from "../utils/history"
 import { generateAuthError } from "../utils/generateAuthError"
+import configFile from "../config.json"
 
 const initialState = localStorageService.getAccessToken()
     ? {
@@ -86,12 +87,27 @@ const userUpdateFailed = createAction("users/userUpdateFailed")
 export const logIn =
     ({ payload, redirect }) =>
     async (dispatch) => {
+        console.log("front", payload)
+
         const { email, password } = payload
         dispatch(authRequested())
         try {
-            const data = await authService.login({ email, password })
-            dispatch(authRequestSuccess({ userId: data.localId }))
-            localStorageService.setTokens(data)
+            if (configFile.isFireBase) {
+                const data = await authService.login({ email, password })
+                dispatch(authRequestSuccess({ userId: data.localId }))
+                localStorageService.setTokens(data)
+            } else {
+                const data = await authService.login({ email, password })
+                console.log("back", data)
+
+                dispatch(authRequestSuccess({ userId: data.userId }))
+                localStorageService.setTokens({
+                    idToken: data.accessToken,
+                    refreshToken: data.refreshToken,
+                    localId: data.userId,
+                    expiresIn: data.expiresIn
+                })
+            }
             history.push(redirect)
         } catch (error) {
             const { code, message } = error.response.data.error
@@ -104,11 +120,12 @@ export const logIn =
         }
     }
 
-export const singUp =
-    ({ email, password, ...rest }) =>
-    async (dispatch) => {
-        dispatch(authRequested())
-        try {
+export const singUp = (payload) => async (dispatch) => {
+    console.log("front", payload)
+    dispatch(authRequested())
+    try {
+        if (configFile.isFireBase) {
+            const { email, password, ...rest } = payload
             const data = await authService.register({ email, password })
             dispatch(authRequestSuccess({ userId: data.localId }))
             localStorageService.setTokens(data)
@@ -124,10 +141,24 @@ export const singUp =
                     ...rest
                 })
             )
-        } catch (error) {
-            dispatch(authRequestFailed(error.message))
+        } else {
+            const data = await authService.registerMongoDB(payload)
+            console.log("back", data)
+
+            dispatch(authRequestSuccess({ userId: data.userId }))
+            localStorageService.setTokens({
+                idToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                localId: data.userId,
+                expiresIn: data.expiresIn
+            })
         }
+
+        history.push("/users")
+    } catch (error) {
+        dispatch(authRequestFailed(error.message))
     }
+}
 
 export const logOut = () => (dispatch) => {
     localStorageService.removeAuthData()

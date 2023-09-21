@@ -29,6 +29,10 @@ const authService = {
         const { data } = await httpAuth.post(singUpURL, { email, password, returnSecureToken: true })
         return data
     },
+    registerMongoDB: async (payload) => {
+        const { data } = await httpAuth.post(singUpURL, payload)
+        return data
+    },
     login: async ({ email, password }) => {
         const { data } = await httpAuth.post(logInURL, { email, password, returnSecureToken: true })
         return data
