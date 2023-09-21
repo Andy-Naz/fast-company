@@ -26,6 +26,7 @@ const Comments = () => {
     const comments = useSelector(getComments())
 
     const handleSubmit = (data) => {
+        // console.log("form", data)
         dispatch(createComment(data, userId))
         // createComment(data, userId)
     }

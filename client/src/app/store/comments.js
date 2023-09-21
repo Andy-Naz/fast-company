@@ -2,6 +2,7 @@ import { createAction, createSlice } from "@reduxjs/toolkit"
 import commentService from "../services/comment.service"
 import { nanoid } from "nanoid"
 import localStorageService from "../services/localStorage.service"
+import configFile from "../config.json"
 
 const commentsSlice = createSlice({
     name: "comments",
@@ -41,8 +42,13 @@ const { commentsRequested, commentsReceived, commentsRequestFailed, commentCreat
 export const loadCommentsList = (userId) => async (dispatch) => {
     dispatch(commentsRequested())
     try {
-        const { content } = await commentService.getComments(userId)
-        dispatch(commentsReceived(content))
+        if (configFile.isFireBase) {
+            const { content } = await commentService.getComments(userId)
+            dispatch(commentsReceived(content))
+        } else {
+            const { content } = await commentService.getCommentsMongoDB(userId)
+            dispatch(commentsReceived(content))
+        }
     } catch (error) {
         dispatch(commentsRequestFailed(error.message))
     }
@@ -51,26 +57,44 @@ export const loadCommentsList = (userId) => async (dispatch) => {
 export const createComment = (data, userId) => async (dispatch) => {
     dispatch(commentCreateRequested())
     const currentUserId = localStorageService.getUserId()
-    const comment = {
-        ...data,
-        _id: nanoid(),
-        pageId: userId,
-        created_at: Date.now(),
-        userId: currentUserId
-    }
+
     try {
-        const { content } = await commentService.createComment(comment)
-        dispatch(commentCreated(content))
+        if (configFile.isFireBase) {
+            const comment = {
+                ...data,
+                _id: nanoid(),
+                pageId: userId,
+                created_at: Date.now(),
+                userId: currentUserId
+            }
+            const { content } = await commentService.createComment(comment)
+
+            dispatch(commentCreated(content))
+        } else {
+            const comment = {
+                ...data,
+                pageId: userId
+            }
+            const { content } = await commentService.createCommentMongoDB(comment)
+            dispatch(commentCreated(content))
+        }
     } catch (error) {
         dispatch(commentCreateFailed(error.message))
     }
 }
 
-export const removeComment = (id) => async (dispatch) => {
+export const removeComment = (commentId) => async (dispatch) => {
     try {
-        const { content } = await commentService.removeComment(id)
-        if (content === null) {
-            dispatch(commentRemoved(id))
+        if (configFile.isFireBase) {
+            const { content } = await commentService.removeComment(commentId)
+            if (content === null) {
+                dispatch(commentRemoved(commentId))
+            }
+        } else {
+            const { content } = await commentService.removeComment(commentId)
+            if (!content) {
+                dispatch(commentRemoved(commentId))
+            }
         }
     } catch (error) {
         dispatch(commentRemoveFailed(error.message))

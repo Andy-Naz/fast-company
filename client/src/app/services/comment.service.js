@@ -7,11 +7,24 @@ const commentService = {
         const { data } = await httpService.put(commentEndpoint + payload._id, payload)
         return data
     },
+    createCommentMongoDB: async (payload) => {
+        const { data } = await httpService.post(commentEndpoint, payload)
+        return data
+    },
     getComments: async (pageId) => {
         const { data } = await httpService.get(commentEndpoint, {
             params: {
                 orderBy: '"pageId"',
                 equalTo: `"${pageId}"`
+            }
+        })
+        return data
+    },
+    getCommentsMongoDB: async (pageId) => {
+        const { data } = await httpService.get(commentEndpoint, {
+            params: {
+                orderBy: "pageId",
+                equalTo: `${pageId}`
             }
         })
         return data

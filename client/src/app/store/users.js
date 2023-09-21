@@ -100,13 +100,13 @@ export const logIn =
                 const data = await authService.login({ email, password })
                 console.log("back", data)
 
-                dispatch(authRequestSuccess({ userId: data.userId }))
                 localStorageService.setTokens({
                     idToken: data.accessToken,
                     refreshToken: data.refreshToken,
                     localId: data.userId,
                     expiresIn: data.expiresIn
                 })
+                dispatch(authRequestSuccess({ userId: data.userId }))
             }
             history.push(redirect)
         } catch (error) {
@@ -145,13 +145,13 @@ export const singUp = (payload) => async (dispatch) => {
             const data = await authService.registerMongoDB(payload)
             console.log("back", data)
 
-            dispatch(authRequestSuccess({ userId: data.userId }))
             localStorageService.setTokens({
                 idToken: data.accessToken,
                 refreshToken: data.refreshToken,
                 localId: data.userId,
                 expiresIn: data.expiresIn
             })
+            dispatch(authRequestSuccess({ userId: data.userId }))
         }
 
         history.push("/users")
