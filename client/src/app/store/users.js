@@ -87,7 +87,6 @@ const userUpdateFailed = createAction("users/userUpdateFailed")
 export const logIn =
     ({ payload, redirect }) =>
     async (dispatch) => {
-        console.log("front", payload)
 
         const { email, password } = payload
         dispatch(authRequested())
@@ -98,7 +97,6 @@ export const logIn =
                 localStorageService.setTokens(data)
             } else {
                 const data = await authService.login({ email, password })
-                console.log("back", data)
 
                 localStorageService.setTokens({
                     idToken: data.accessToken,
